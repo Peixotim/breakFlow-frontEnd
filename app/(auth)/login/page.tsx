@@ -128,7 +128,7 @@ export default function LoginPage() {
             <p className="text-sm font-medium text-gray-500 dark:text-[#666]">
               Novo por aqui?{" "}
               <Link
-                href="/cadastro"
+                href="/register"
                 className="font-bold text-[#1a7c37] decoration-2 underline-offset-4 transition-all hover:text-green-700 hover:underline dark:text-[#89F336] dark:hover:text-[#B4FF75]"
               >
                 Criar conta corporativa

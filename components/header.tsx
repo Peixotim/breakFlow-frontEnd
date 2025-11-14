@@ -30,11 +30,14 @@ export function Header() {
 
         <div className="h-7 w-px bg-gray-300 dark:bg-white/10" />
         <nav className="hidden md:flex items-center gap-6">
+                    <Link href="/" className="text-sm font-medium text-gray-600 dark:text-[#9A9A9A] hover:text-gray-900 dark:hover:text-white transition-colors">
+            Home
+          </Link>
           <Link href="/features" className="text-sm font-medium text-gray-600 dark:text-[#9A9A9A] hover:text-gray-900 dark:hover:text-white transition-colors">
             Funcionalidades
           </Link>
-          <Link href="#pricing" className="text-sm font-medium text-gray-600 dark:text-[#9A9A9A] hover:text-gray-900 dark:hover:text-white transition-colors">
-            Preços
+          <Link href="/docs" className="text-sm font-medium text-gray-600 dark:text-[#9A9A9A] hover:text-gray-900 dark:hover:text-white transition-colors">
+            Docs
           </Link>
           <Link href="/blog" className="text-sm font-medium text-gray-600 dark:text-[#9A9A9A] hover:text-gray-900 dark:hover:text-white transition-colors">
             Blog

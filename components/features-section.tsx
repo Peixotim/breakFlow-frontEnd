@@ -24,7 +24,6 @@ const features = [
   },
 ];
 
-
 const cardVariants = {
   hidden: { opacity: 0, y: 50, filter: "blur(5px)" },
   visible: (i: number) => ({
@@ -42,40 +41,33 @@ const cardVariants = {
 
 export function FeaturesSection() {
   return (
-    <section className="relative w-full pt-24 pb-16 sm:pt-32 sm:pb-24 bg-gray-50 dark:bg-[#121214] overflow-hidden">
-      
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] 
-                      bg-[#89F336]/5 rounded-full blur-[200px] 
-                      animate-[pulse_10s_cubic-bezier(0.4,0,0.6,1)_infinite] z-0" />
-      
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none z-0"></div>
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px] mask-[radial-gradient(ellipse_80%_50%_at_50%_50%,#000_30%,transparent_100%)] pointer-events-none z-0"></div>
+    <section className="relative w-full overflow-hidden bg-gray-50 pt-24 pb-16 sm:pt-32 sm:pb-24 dark:bg-[#121214]">
+      <div className="absolute top-1/4 left-1/2 z-0 h-[600px] w-[1000px] -translate-x-1/2 animate-[pulse_10s_cubic-bezier(0.4,0,0.6,1)_infinite] rounded-full bg-[#89F336]/5 blur-[200px]" />
 
-      <div className="container mx-auto max-w-7xl px-4 z-10 relative">
-        <motion.div 
-          className="text-center max-w-3xl mx-auto mb-16"
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03]"></div>
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] mask-[radial-gradient(ellipse_80%_50%_at_50%_50%,#000_30%,transparent_100%)] bg-size-[24px_24px]"></div>
+
+      <div className="relative z-10 container mx-auto max-w-7xl px-4">
+        <motion.div
+          className="mx-auto mb-16 max-w-3xl text-center"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-sm font-bold uppercase tracking-widest
-                         text-transparent bg-clip-text 
-                         bg-linear-to-r from-green-700 to-green-500
-                         dark:from-[#89F336] dark:to-[#9EFF55]">
+          <h2 className="bg-linear-to-r from-green-700 to-green-500 bg-clip-text text-sm font-bold tracking-widest text-transparent uppercase dark:from-[#89F336] dark:to-[#9EFF55]">
             Como Funciona
           </h2>
-          <p className="mt-4 text-4xl md:text-5xl font-bold tracking-tighter 
-                        text-gray-900 dark:text-white">
+          <p className="mt-4 text-4xl font-bold tracking-tighter text-gray-900 md:text-5xl dark:text-white">
             Transforme o Caos em Fluxo
           </p>
-          <p className="mt-6 text-lg text-gray-500 dark:text-[#9A9A9A] leading-relaxed">
-            O BreakFlow funciona em um ciclo simples de 3 etapas, 
-            dando autonomia à sua equipe e poder de gestão a você.
+          <p className="mt-6 text-lg leading-relaxed text-gray-500 dark:text-[#9A9A9A]">
+            O BreakFlow funciona em um ciclo simples de 3 etapas, dando autonomia à sua equipe e
+            poder de gestão a você.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {features.map((feature, i) => (
             <motion.div
               key={feature.title}
@@ -84,23 +76,17 @@ export function FeaturesSection() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
-              className="flex flex-col p-8 rounded-3xl
-                         bg-white dark:bg-[#18181B] 
-                         border border-gray-200 dark:border-white/5 
-                         shadow-xl dark:shadow-black/20"
+              className="flex flex-col rounded-3xl border border-gray-200 bg-white p-8 shadow-xl dark:border-white/5 dark:bg-[#18181B] dark:shadow-black/20"
             >
-              <div className="shrink-0 w-12 h-12 flex items-center justify-center 
-                            rounded-xl bg-green-700/10 dark:bg-[#89F336]/10 
-                            border border-green-700/20 dark:border-[#89F336]/20 
-                            text-green-700 dark:text-[#89F336] shadow-inner">
-                <feature.icon className="w-6 h-6" strokeWidth={2.5} />
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-green-700/20 bg-green-700/10 text-green-700 shadow-inner dark:border-[#89F336]/20 dark:bg-[#89F336]/10 dark:text-[#89F336]">
+                <feature.icon className="h-6 w-6" strokeWidth={2.5} />
               </div>
 
               <div className="mt-6">
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
                   {feature.title}
                 </h3>
-                <p className="mt-4 text-base text-gray-500 dark:text-[#9A9A9A] leading-relaxed">
+                <p className="mt-4 text-base leading-relaxed text-gray-500 dark:text-[#9A9A9A]">
                   {feature.description}
                 </p>
               </div>

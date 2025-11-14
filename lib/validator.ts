@@ -1,6 +1,6 @@
 export function validateCPF(cpf: string): boolean {
-  if (typeof cpf !== 'string') return false;
-  const digits = cpf.replace(/\D/g, '');
+  if (typeof cpf !== "string") return false;
+  const digits = cpf.replace(/\D/g, "");
   if (digits.length !== 11) return false;
   if (/^(\d)\1{10}$/.test(digits)) return false;
 
@@ -12,17 +12,17 @@ export function validateCPF(cpf: string): boolean {
     const remainder = (sum * 10) % 11;
     return remainder === 10 ? 0 : remainder;
   };
-  
-  const d = digits.split('').map(Number);
+
+  const d = digits.split("").map(Number);
   const firstCheck = calcCheckDigit(d.slice(0, 9));
   const secondCheck = calcCheckDigit(d.slice(0, 10));
-  
+
   return firstCheck === d[9] && secondCheck === d[10];
 }
 
 export function validateCNPJ(cnpj: string): boolean {
-  if (typeof cnpj !== 'string') return false;
-  const digits = cnpj.replace(/\D/g, '');
+  if (typeof cnpj !== "string") return false;
+  const digits = cnpj.replace(/\D/g, "");
   if (digits.length !== 14) return false;
   if (/^(\d)\1{13}$/.test(digits)) return false;
 
@@ -35,7 +35,7 @@ export function validateCNPJ(cnpj: string): boolean {
     return remainder < 2 ? 0 : 11 - remainder;
   };
 
-  const d = digits.split('').map(Number);
+  const d = digits.split("").map(Number);
   const multipliers1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
   const multipliers2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
 

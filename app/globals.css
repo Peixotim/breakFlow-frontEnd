@@ -234,9 +234,7 @@
 }
 
 .label-form {
-  @apply text-[11px] font-bold ml-4 uppercase tracking-widest transition-colors 
-         text-gray-500 group-focus-within:text-[#1a7c37]
-         dark:text-[#666666] dark:group-focus-within:text-[#89F336];
+  @apply ml-4 text-[11px] font-bold tracking-widest text-gray-500 uppercase transition-colors group-focus-within:text-[#1a7c37] dark:text-[#666666] dark:group-focus-within:text-[#89F336];
 }
 
 .input-container {
@@ -244,22 +242,9 @@
 }
 
 .input-icon {
-  @apply absolute left-5 top-1/2 -translate-y-1/2 transition-colors 
-         text-gray-400 group-focus-within:text-[#1a7c37]
-         dark:text-[#666666] dark:group-focus-within:text-[#89F336]
-         w-5 h-5;
+  @apply absolute top-1/2 left-5 h-5 w-5 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-[#1a7c37] dark:text-[#666666] dark:group-focus-within:text-[#89F336];
 }
 
 .input-field {
-  @apply h-14 w-full rounded-2xl border pl-14 pr-6 text-base font-medium outline-none transition-all duration-300 shadow-sm
- 
-         bg-white border-gray-200 text-gray-900 placeholder:text-gray-400
-         hover:border-gray-300 hover:bg-gray-50
-         focus:border-[#1a7c37] focus:ring-4 focus:ring-[#1a7c37]/10
-         
-
-         dark:bg-[#18181B] dark:border-white/5 dark:text-white dark:placeholder:text-[#444]
-         dark:hover:border-white/10 dark:hover:bg-[#1E1E22]
-         dark:focus:border-[#89F336]/50 dark:focus:ring-[#89F336]/10 dark:focus:bg-[#18181B]
-         dark:shadow-black/20;
+  @apply h-14 w-full rounded-2xl border border-gray-200 bg-white pr-6 pl-14 text-base font-medium text-gray-900 shadow-sm transition-all duration-300 outline-none placeholder:text-gray-400 hover:border-gray-300 hover:bg-gray-50 focus:border-[#1a7c37] focus:ring-4 focus:ring-[#1a7c37]/10 dark:border-white/5 dark:bg-[#18181B] dark:text-white dark:shadow-black/20 dark:placeholder:text-[#444] dark:hover:border-white/10 dark:hover:bg-[#1E1E22] dark:focus:border-[#89F336]/50 dark:focus:bg-[#18181B] dark:focus:ring-[#89F336]/10;
 }

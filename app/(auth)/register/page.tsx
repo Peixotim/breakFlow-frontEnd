@@ -14,10 +14,12 @@ import {
   User,
   FileText,
   Check,
-  Info,
+  CheckCircle2, 
 } from "lucide-react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { registerEnterprise } from "@/lib/api";
+import { registerEnterprise } from "@/lib/api"; 
+import { validateCPF, validateCNPJ } from "@/lib/validator"; 
+import { Toaster, toast } from "sonner"; 
 
 interface FormData {
   companyName: string;
@@ -26,17 +28,12 @@ interface FormData {
   mail: string;
   cpf: string;
   password: string;
-}
-
-interface ToastState {
-  message: string;
-  type: "error" | "success" | "warning";
+  confirmPassword: string; 
 }
 
 export default function RegisterPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [toast, setToast] = useState<ToastState | null>(null);
   const [step, setStep] = useState(1);
   const [bgOpacity, setBgOpacity] = useState(0.5);
   const [invalidFields, setInvalidFields] = useState<{ cpf: boolean; cnpj: boolean }>({ cpf: false, cnpj: false });
@@ -48,17 +45,15 @@ export default function RegisterPage() {
     mail: "",
     cpf: "",
     password: "",
+    confirmPassword: "", 
   });
 
-  // 🌈 animação de fundo
   useEffect(() => {
     const interval = setInterval(() => {
       setBgOpacity((prev) => (prev >= 0.9 ? 0.4 : prev + 0.02));
     }, 120);
     return () => clearInterval(interval);
   }, []);
-
-  // ---------- FORMATADORES ----------
   const formatCNPJ = (value: string) => {
     return value
       .replace(/\D/g, "")
@@ -77,50 +72,7 @@ export default function RegisterPage() {
       .replace(/(\d{3})\.(\d{3})\.(\d{3})(\d{1,2})/, "$1.$2.$3-$4")
       .slice(0, 14);
   };
-
-  // ---------- VALIDAÇÃO CPF / CNPJ ----------
-  const validarCPF = (cpf: string): boolean => {
-    cpf = cpf.replace(/[^\d]+/g, "");
-    if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
-    let soma = 0;
-    for (let i = 0; i < 9; i++) soma += parseInt(cpf[i]) * (10 - i);
-    let resto = (soma * 10) % 11;
-    if (resto === 10 || resto === 11) resto = 0;
-    if (resto !== parseInt(cpf[9])) return false;
-    soma = 0;
-    for (let i = 0; i < 10; i++) soma += parseInt(cpf[i]) * (11 - i);
-    resto = (soma * 10) % 11;
-    if (resto === 10 || resto === 11) resto = 0;
-    return resto === parseInt(cpf[10]);
-  };
-
-  const validarCNPJ = (cnpj: string): boolean => {
-    cnpj = cnpj.replace(/[^\d]+/g, "");
-    if (cnpj.length !== 14 || /^(\d)\1+$/.test(cnpj)) return false;
-    let tamanho = cnpj.length - 2;
-    let numeros = cnpj.substring(0, tamanho);
-    const digitos = cnpj.substring(tamanho);
-    let soma = 0;
-    let pos = tamanho - 7;
-    for (let i = tamanho; i >= 1; i--) {
-      soma += parseInt(numeros[tamanho - i]) * pos--;
-      if (pos < 2) pos = 9;
-    }
-    let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
-    if (resultado !== parseInt(digitos[0])) return false;
-    tamanho++;
-    numeros = cnpj.substring(0, tamanho);
-    soma = 0;
-    pos = tamanho - 7;
-    for (let i = tamanho; i >= 1; i--) {
-      soma += parseInt(numeros[tamanho - i]) * pos--;
-      if (pos < 2) pos = 9;
-    }
-    resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
-    return resultado === parseInt(digitos[1]);
-  };
-
-  // ---------- HANDLERS ----------
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     let formattedValue = value;
@@ -129,27 +81,40 @@ export default function RegisterPage() {
     if (name === "cpf") formattedValue = formatCPF(value);
 
     setFormData((prev) => ({ ...prev, [name]: formattedValue }));
+    
+    if (name === "cnpj") setInvalidFields(prev => ({...prev, cnpj: false}));
+    if (name === "cpf") setInvalidFields(prev => ({...prev, cpf: false}));
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    if (value.length === 0) return; 
 
     if (name === "cnpj") {
-      setInvalidFields((prev) => ({ ...prev, cnpj: !validarCNPJ(formattedValue) && formattedValue.length === 18 }));
+      const isValid = validateCNPJ(value);
+      if (!isValid && value.length > 0) { 
+        toast.error("CNPJ inválido!");
+        setInvalidFields(prev => ({ ...prev, cnpj: true }));
+      }
     }
     if (name === "cpf") {
-      setInvalidFields((prev) => ({ ...prev, cpf: !validarCPF(formattedValue) && formattedValue.length === 14 }));
+      const isValid = validateCPF(value);
+      if (!isValid && value.length > 0) {
+        toast.error("CPF inválido!");
+        setInvalidFields(prev => ({ ...prev, cpf: true }));
+      }
     }
   };
 
-  const showToast = (message: string, type: ToastState["type"] = "error") => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3200);
-  };
 
   const nextStep = () => {
     if (!formData.companyName || !formData.cnpj) {
-      showToast("Preencha todos os campos antes de continuar!", "warning");
+      toast.warning("Preencha todos os campos antes de continuar!");
       return;
     }
-    if (!validarCNPJ(formData.cnpj)) {
-      showToast("CNPJ inválido! Corrija antes de prosseguir.", "error");
+    if (!validateCNPJ(formData.cnpj)) {
+      toast.error("CNPJ inválido! Corrija antes de prosseguir.");
+      setInvalidFields(prev => ({...prev, cnpj: true})); 
       return;
     }
     setStep(2);
@@ -159,12 +124,19 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.mail || !formData.cpf || !formData.password) {
-      showToast("Preencha todos os campos para finalizar!", "warning");
+    if (step === 1) return nextStep();
+
+    if (!formData.name || !formData.mail || !formData.cpf || !formData.password || !formData.confirmPassword) {
+      toast.warning("Preencha todos os campos para finalizar!");
       return;
     }
-    if (!validarCPF(formData.cpf)) {
-      showToast("CPF inválido! Corrija antes de enviar o cadastro.", "error");
+    if (!validateCPF(formData.cpf)) {
+      toast.error("CPF inválido! Corrija antes de enviar o cadastro.");
+      setInvalidFields(prev => ({...prev, cpf: true})); 
+      return;
+    }
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("As senhas não coincidem!");
       return;
     }
 
@@ -188,17 +160,19 @@ export default function RegisterPage() {
 
     try {
       await registerEnterprise(payload);
-      showToast("Conta criada com sucesso! Redirecionando...", "success");
+      toast.success("Conta criada com sucesso! Redirecionando...");
       await new Promise((res) => setTimeout(res, 1800));
       router.push("/dashboard?status=registered");
-    } catch {
-      showToast("Erro ao registrar. Tente novamente.", "error");
-    } finally {
+    } catch (err: unknown) { 
       setIsLoading(false);
+      if (err instanceof Error) {
+        toast.error(err.message || "Erro ao registrar. Tente novamente.");
+      } else {
+        toast.error("Erro desconhecido ao registrar. Tente novamente.");
+      }
     }
   };
 
-  // ---------- ANIMAÇÕES ----------
   const fadeItem: Variants = {
     hidden: { opacity: 0, y: 25 },
     visible: (i: number) => ({
@@ -213,14 +187,7 @@ export default function RegisterPage() {
     visible: { opacity: 1, x: 0, filter: "blur(0px)", transition: { duration: 0.6 } },
     exit: { opacity: 0, x: -80, filter: "blur(6px)", transition: { duration: 0.4 } },
   };
-
-  const toastColors = {
-    error: "bg-red-600 dark:bg-red-500",
-    success: "bg-green-600 dark:bg-[#89F336]",
-    warning: "bg-yellow-500 dark:bg-yellow-400",
-  };
-
-  // ---------- JSX ----------
+  
   return (
     <motion.div
       className="min-h-screen w-full flex flex-col items-center justify-center p-8 bg-gray-50 dark:bg-[#121214] text-gray-900 dark:text-[#EDEDED] relative overflow-hidden"
@@ -228,22 +195,8 @@ export default function RegisterPage() {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 1.2 }}
     >
-      <AnimatePresence>
-        {toast && (
-          <motion.div
-            key="toast"
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -40 }}
-            transition={{ duration: 0.4 }}
-            className={`fixed top-6 z-50 px-6 py-3 rounded-full shadow-lg flex items-center gap-2 font-semibold text-white ${toastColors[toast.type]}`}
-          >
-            <Info className="w-5 h-5" /> {toast.message}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Fundo dinâmico */}
+      <Toaster position="bottom-center" richColors theme="dark" />
+      
       <AnimatePresence mode="wait">
         <motion.div
           key={`bg-${step}`}
@@ -279,76 +232,79 @@ export default function RegisterPage() {
           <p className="text-gray-500 dark:text-[#888] text-lg">
             Etapa {step} de 2: {step === 1 ? "Dados da Empresa" : "Sua Conta Pessoal"}
           </p>
+          <div className="flex w-1/2 mx-auto mt-4">
+             <div className={`h-1 rounded-l-full w-1/2 ${step === 1 ? 'bg-primary' : 'bg-gray-200 dark:bg-gray-700'} transition-all duration-500`} />
+             <div className={`h-1 rounded-r-full w-1/2 ${step === 2 ? 'bg-primary' : 'bg-gray-200 dark:bg-gray-700'} transition-all duration-500`} />
+           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="relative min-h-[440px]">
+
+        <form onSubmit={handleSubmit} className="relative h-[360px] overflow-visible">
           <AnimatePresence mode="wait">
             {step === 1 ? (
-              <motion.div key="step1" variants={variants} initial="hidden" animate="visible" exit="exit" className="space-y-5">
-                {[{ label: "Nome da Empresa", name: "companyName", icon: Building },
-                  { label: "CNPJ", name: "cnpj", icon: FileText }].map((f, i) => (
-                  <motion.div key={f.name} variants={fadeItem} custom={i}>
-                    <label className="label-form">{f.label}</label>
-                    <div className={`input-container ${invalidFields.cnpj && f.name === "cnpj" ? "border-red-500" : ""}`}>
-                      <f.icon className="input-icon" />
-                      <input
-                        name={f.name}
-                        placeholder={f.label}
-                        value={formData[f.name as keyof FormData]}
-                        onChange={handleChange}
-                        className="input-field"
-                        required
-                      />
-                    </div>
-                  </motion.div>
-                ))}
-                <motion.button
-                  type="button"
-                  onClick={nextStep}
-                  className="w-full h-14 mt-6 rounded-full font-bold text-lg text-white bg-[#1a7c37] hover:bg-[#14632b] dark:text-[#0B0C10] dark:bg-[#89F336] hover:scale-[1.02] transition-all"
-                >
-                  Próximo <ArrowRight className="inline-block ml-2" />
-                </motion.button>
+              <motion.div 
+                key="step1" 
+                variants={variants} 
+                initial="hidden" 
+                animate="visible" 
+                exit="exit" 
+                className="space-y-5 absolute w-full"
+              >
+                <motion.div variants={fadeItem} custom={0}>
+                  <InputGroup
+                    label="Nome da Empresa"
+                    icon={<Building />}
+                    name="companyName"
+                    placeholder="Ex: TechFlow LTDA"
+                    value={formData.companyName}
+                    onChange={handleChange}
+                    required
+                  />
+                </motion.div>
+                <motion.div variants={fadeItem} custom={1}>
+                  <InputGroup
+                    label="CNPJ"
+                    icon={<FileText />}
+                    name="cnpj"
+                    placeholder="00.000.000/0001-00"
+                    value={formData.cnpj}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    isInvalid={invalidFields.cnpj}
+                    maxLength={18}
+                    required
+                  />
+                </motion.div>
+                <motion.div variants={fadeItem} custom={2}>
+                  <button
+                    type="button"
+                    onClick={nextStep}
+                    className="w-full h-14 mt-6 rounded-full font-bold text-lg text-white bg-[#1a7c37] hover:bg-[#14632b] dark:text-[#0B0C10] dark:bg-[#89F336] hover:scale-[1.02] transition-all"
+                  >
+                    Próximo <ArrowRight className="inline-block ml-2" />
+                  </button>
+                </motion.div>
               </motion.div>
             ) : (
-              <motion.div key="step2" variants={variants} initial="hidden" animate="visible" exit="exit" className="space-y-5">
+              <motion.div 
+                key="step2" 
+                variants={variants} 
+                initial="hidden" 
+                animate="visible" 
+                exit="exit" 
+                className="space-y-5 absolute w-full"
+              >
                 <div className="grid grid-cols-2 gap-4">
-                  {[{ label: "Nome", name: "name", icon: User },
-                    { label: "CPF", name: "cpf", icon: FileText }].map((f) => (
-                    <div key={f.name}>
-                      <label className="label-form">{f.label}</label>
-                      <div className={`input-container ${invalidFields.cpf && f.name === "cpf" ? "border-red-500" : ""}`}>
-                        <f.icon className="input-icon" />
-                        <input
-                          name={f.name}
-                          placeholder={f.label}
-                          value={formData[f.name as keyof FormData]}
-                          onChange={handleChange}
-                          className="input-field"
-                          required
-                        />
-                      </div>
-                    </div>
-                  ))}
+                  <InputGroup label="Nome" name="name" icon={<User />} placeholder="João Silva" value={formData.name} onChange={handleChange} required />
+                  <InputGroup label="CPF" name="cpf" icon={<FileText />} placeholder="000.000.000-00" value={formData.cpf} onChange={handleChange} onBlur={handleBlur} isInvalid={invalidFields.cpf} maxLength={14} required />
                 </div>
-                {[{ label: "Email de Acesso", name: "mail", icon: Mail },
-                  { label: "Senha Forte", name: "password", icon: Lock }].map((f, i) => (
-                  <motion.div key={f.name} variants={fadeItem} custom={i + 1}>
-                    <label className="label-form">{f.label}</label>
-                    <div className="input-container">
-                      <f.icon className="input-icon" />
-                      <input
-                        name={f.name}
-                        type={f.name === "password" ? "password" : "text"}
-                        placeholder={f.label}
-                        value={formData[f.name as keyof FormData]}
-                        onChange={handleChange}
-                        className="input-field"
-                        required
-                      />
-                    </div>
-                  </motion.div>
-                ))}
+                <InputGroup label="Email de Acesso" name="mail" icon={<Mail />} placeholder="voce@empresa.com" value={formData.mail} onChange={handleChange} type="email" required />
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <InputGroup label="Senha Forte" name="password" icon={<Lock />} placeholder="••••••••••••" value={formData.password} onChange={handleChange} type="password" required />
+                  <InputGroup label="Confirmar Senha" name="confirmPassword" icon={<CheckCircle2 />} placeholder="••••••••••••" value={formData.confirmPassword} onChange={handleChange} type="password" required />
+                </div>
+                
                 <div className="flex gap-4 pt-2">
                   <button type="button" onClick={prevStep} className="w-1/3 h-14 rounded-full font-bold bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-[#222] dark:text-[#aaa] transition-all">
                     <ArrowLeft className="inline w-5 h-5" />
@@ -356,7 +312,7 @@ export default function RegisterPage() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-2/3 h-14 rounded-full font-bold text-lg text-[#0B0C10] bg-[#89F336] hover:bg-[#9EFF55] shadow-lg active:scale-[0.98] transition-all"
+                    className="w-2/3 h-14 rounded-full font-bold text-lg text-[#0B0C10] bg-[#89F336] hover:bg-[#9EFF55] shadow-lg active:scale-[0.98] transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                   >
                     {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : <>Finalizar <Check className="w-5 h-5 inline ml-2" /></>}
                   </button>
@@ -366,7 +322,7 @@ export default function RegisterPage() {
           </AnimatePresence>
         </form>
 
-        <div className="mt-8 text-center absolute bottom-8 left-0 w-full">
+        <div className="mt-8 text-center">
           <p className="text-gray-500 dark:text-[#666] text-sm">
             Já possui uma conta?{" "}
             <Link href="/login" className="font-semibold hover:underline text-[#1a7c37] dark:text-[#89F336]">
@@ -378,3 +334,30 @@ export default function RegisterPage() {
     </motion.div>
   );
 }
+
+interface InputGroupProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  icon: React.ReactNode;
+  label: string;
+  isInvalid?: boolean;
+}
+
+const InputGroup = ({ icon, label, isInvalid = false, ...props }: InputGroupProps) => {
+  const errorClasses = "border-red-500/50 focus:border-red-500 focus:ring-red-500/10";
+  const focusClasses = "focus:border-primary/50 focus:ring-4 focus:ring-primary/10";
+  
+  return (
+    <div className="space-y-2 group">
+      <label className="label-form">{label}</label>
+      <div className="input-container">
+        <span className={`input-icon ${isInvalid ? "text-red-500" : ""}`}>
+          {icon}
+        </span>
+        <input
+          {...props}
+          className={`input-field ${isInvalid ? errorClasses : focusClasses}`}
+          required
+        />
+      </div>
+    </div>
+  );
+};

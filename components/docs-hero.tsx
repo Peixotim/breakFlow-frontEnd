@@ -8,7 +8,7 @@ export function DocsHero() {
     <section className="relative w-full pt-48 pb-24 sm:pb-32 overflow-hidden">
       
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none z-0"></div>
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_30%,transparent_100%)] pointer-events-none z-0"></div>
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px] mask-[radial-gradient(ellipse_80%_50%_at_50%_50%,#000_30%,transparent_100%)] pointer-events-none z-0"></div>
       <div className="absolute top-0 left-1/4 w-[1000px] h-[600px] 
                       bg-[#89F336]/5 rounded-full blur-[200px] 
                       animate-[pulse_10s_cubic-bezier(0.4,0,0.6,1)_infinite] z-0" />

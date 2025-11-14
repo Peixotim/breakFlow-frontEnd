@@ -38,7 +38,6 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
-    // Simulação de Login
     setTimeout(() => {
       setIsLoading(false);
       router.push("/dashboard");
@@ -56,16 +55,13 @@ export default function LoginPage() {
       return;
     }
 
-    // Simulação de Registro de Funcionário
     setTimeout(() => {
       setIsLoading(false);
-      // Após criar conta de funcionário, geralmente vai para o login ou dashboard
-      setIsRegisterMode(false); // Volta para o login para a pessoa entrar
-      // router.push("/dashboard"); 
+      setIsRegisterMode(false); 
     }, 2000);
   };
 
-  // Variantes da Animação
+
   const overlayVariants = {
     login: { x: "0%" },
     register: { x: "100%" },
@@ -85,7 +81,7 @@ export default function LoginPage() {
 
         {/* BACKGROUND FX (GRADES) */}
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none z-0"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none z-0"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none z-0"></div>
 
         <div className="absolute top-8 right-8 z-30">
           <ThemeToggle />
@@ -99,7 +95,7 @@ export default function LoginPage() {
         <div className={`absolute top-0 left-0 w-full lg:w-1/2 h-full flex flex-col justify-center items-center p-8 transition-all duration-500 ${isRegisterMode ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
            <div className="w-full max-w-[420px]">
               <div className="mb-6 text-center lg:text-left">
-                <h2 className="text-3xl font-bold mb-2 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-[#1a7c37] to-gray-900 dark:from-white dark:via-[#89F336] dark:to-white">
+                <h2 className="text-3xl font-bold mb-2 tracking-tight text-transparent bg-clip-text bg-linear-to-r from-gray-900 via-[#1a7c37] to-gray-900 dark:from-white dark:via-[#89F336] dark:to-white">
                   Conta Funcionário
                 </h2>
                 <p className="text-sm text-gray-500 dark:text-[#888888]">Preencha seus dados para entrar no time.</p>
@@ -134,12 +130,11 @@ export default function LoginPage() {
            </div>
         </div>
 
-        {/* --- DIREITA: FORMULÁRIO DE LOGIN (PADRÃO) --- */}
         <div className={`absolute top-0 right-0 w-full lg:w-1/2 h-full flex flex-col justify-center items-center p-8 transition-all duration-500 ${!isRegisterMode ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
           
           <div className="w-full max-w-[420px]">
             <div className="mb-10 text-center lg:text-left">
-              <h2 className="animate-text-shimmer mb-3 bg-gradient-to-r from-gray-900 via-[#1a7c37] to-gray-900 bg-clip-text text-4xl font-bold tracking-tight text-transparent dark:from-white dark:via-[#89F336] dark:to-white">
+              <h2 className="animate-text-shimmer mb-3 bg-linear-to-r from-gray-900 via-[#1a7c37] to-gray-900 bg-clip-text text-4xl font-bold tracking-tight text-transparent dark:from-white dark:via-[#89F336] dark:to-white">
                 Bem-vindo de volta
               </h2>
               <p className="text-lg text-gray-500 dark:text-[#888888]">
@@ -211,7 +206,7 @@ export default function LoginPage() {
           variants={overlayVariants}
           transition={{ type: "spring", stiffness: 200, damping: 25, mass: 1 }}
           className="hidden lg:flex absolute top-0 left-0 w-1/2 h-full z-20 items-center justify-center overflow-hidden 
-                     bg-gradient-to-br from-[#89F336] via-[#1a7c37] to-[#89F336] animate-gradient"
+                     bg-linear-to-br from-[#89F336] via-[#1a7c37] to-[#89F336] animate-gradient"
         >
           {/* Background Effects */}
           <div className="absolute inset-0 opacity-40 mix-blend-overlay">
@@ -227,7 +222,7 @@ export default function LoginPage() {
               {!isRegisterMode ? (
                 // ESTADO: LOGIN (Painel na Esquerda) -> MOSTRA CONVITE P/ CADASTRO FUNCIONÁRIO
                 <motion.div key="login-text" variants={contentVariants} initial="hidden" animate="visible" exit="exit">
-                  <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-tr from-[#89F336] to-[#9EFF55] text-4xl shadow-2xl shadow-[#89F336]/30">🥑</div>
+                  <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-3xl bg-linear-to-tr from-[#89F336] to-[#9EFF55] text-4xl shadow-2xl shadow-[#89F336]/30">🥑</div>
                   <h1 className="mb-4 text-5xl font-bold tracking-tight text-white drop-shadow-lg">BreakFlow</h1>
                   
                   <p className="text-lg leading-relaxed font-medium text-white/90 mb-6">
@@ -268,7 +263,7 @@ export default function LoginPage() {
 }
 
 // Componente de Input Reutilizável
-const InputGroup = ({ icon, label, ...props }: { icon: React.ReactNode; label: string; [key: string]: any }) => (
+const InputGroup = ({ icon, label, ...props }: { icon: React.ReactNode; label: string; [key: string]: any}) => (
   <div className="group space-y-2">
     <label className="ml-4 text-[11px] font-bold tracking-widest text-gray-500 uppercase transition-colors group-focus-within:text-[#1a7c37] dark:text-[#666666] dark:group-focus-within:text-[#89F336]">
       {label}

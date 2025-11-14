@@ -35,7 +35,6 @@ export default function NotFound() {
           e esqueceu de bater o ponto de volta.
         </p>
 
-        {/* Botões de Ação */}
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <Button 
             asChild

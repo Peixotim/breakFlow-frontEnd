@@ -4,69 +4,57 @@ import { ShieldAlert, LogOut, LayoutDashboard } from "lucide-react";
 
 export default function Unauthorized() {
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden bg-[#121214] text-[#EDEDED] selection:bg-[#89F336]/30">
-      
+    <div className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#121214] text-[#EDEDED] selection:bg-[#89F336]/30">
+      <div className="pointer-events-none absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03]"></div>
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] bg-size-[24px_24px]"></div>
 
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none"></div>
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none"></div>
+      <div className="absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full bg-[#89F336]/5 blur-[150px]" />
 
-
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#89F336]/5 rounded-full blur-[150px] animate-pulse" />
-
-      <div className="relative z-10 flex flex-col items-center text-center px-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-
-        <div className="relative mb-8 group">
-
-          <div className="w-32 h-32 rounded-4xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center shadow-[0_0_40px_-10px_rgba(137,243,54,0.1)] group-hover:shadow-[0_0_50px_-10px_rgba(137,243,54,0.3)] transition-all duration-500">
-
-            <ShieldAlert 
-              className="w-14 h-14 text-[#89F336] drop-shadow-[0_0_15px_rgba(137,243,54,0.5)] group-hover:animate-[spin_0.5s_ease-in-out_reverse]" 
-              strokeWidth={1.5} 
+      <div className="animate-in fade-in slide-in-from-bottom-4 relative z-10 flex flex-col items-center px-4 text-center duration-700">
+        <div className="group relative mb-8">
+          <div className="flex h-32 w-32 items-center justify-center rounded-4xl border border-white/10 bg-white/5 shadow-[0_0_40px_-10px_rgba(137,243,54,0.1)] backdrop-blur-xl transition-all duration-500 group-hover:shadow-[0_0_50px_-10px_rgba(137,243,54,0.3)]">
+            <ShieldAlert
+              className="h-14 w-14 text-[#89F336] drop-shadow-[0_0_15px_rgba(137,243,54,0.5)] group-hover:animate-[spin_0.5s_ease-in-out_reverse]"
+              strokeWidth={1.5}
             />
           </div>
-      
-          <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-[#18181B] border border-[#89F336]/20 text-[#89F336] text-[10px] font-bold px-3 py-1 rounded-full tracking-widest uppercase shadow-lg">
+
+          <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-[#89F336]/20 bg-[#18181B] px-3 py-1 text-[10px] font-bold tracking-widest text-[#89F336] uppercase shadow-lg">
             Acesso Negado
           </div>
         </div>
 
-
-        <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
+        <h1 className="mb-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
           Área Restrita
         </h1>
-        
-        <p className="text-[#9A9A9A] text-lg max-w-md mb-10 leading-relaxed">
-          Ops! Seu crachá não tem permissão para abrir esta porta. 
-          Esta área é reservada para administradores.
+
+        <p className="mb-10 max-w-md text-lg leading-relaxed text-[#9A9A9A]">
+          Ops! Seu crachá não tem permissão para abrir esta porta. Esta área é reservada para
+          administradores.
         </p>
 
-
-        <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-          <Button 
+        <div className="flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row">
+          <Button
             asChild
-            className="h-12 w-full sm:w-auto px-8 rounded-full font-bold text-lg text-[#0B0C10]
-                       bg-[#89F336] hover:bg-[#9EFF55] 
-                       shadow-[0_0_20px_-5px_rgba(137,243,54,0.4)] hover:shadow-[0_0_25px_-5px_rgba(137,243,54,0.6)]
-                       transition-all duration-300"
+            className="h-12 w-full rounded-full bg-[#89F336] px-8 text-lg font-bold text-[#0B0C10] shadow-[0_0_20px_-5px_rgba(137,243,54,0.4)] transition-all duration-300 hover:bg-[#9EFF55] hover:shadow-[0_0_25px_-5px_rgba(137,243,54,0.6)] sm:w-auto"
           >
             <Link href="/dashboard">
-              <LayoutDashboard className="w-4 h-4 mr-2" />
+              <LayoutDashboard className="mr-2 h-4 w-4" />
               Voltar ao Dashboard
             </Link>
           </Button>
-          <Button 
+          <Button
             asChild
             variant="ghost"
-            className="h-12 w-full sm:w-auto px-8 rounded-full font-medium text-[#9A9A9A] hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10"
+            className="h-12 w-full rounded-full border border-transparent px-8 font-medium text-[#9A9A9A] hover:border-white/10 hover:bg-white/5 hover:text-white sm:w-auto"
           >
             <Link href="/login" className="flex items-center gap-2">
-              <LogOut className="w-4 h-4" /> Entrar com outra conta
+              <LogOut className="h-4 w-4" /> Entrar com outra conta
             </Link>
           </Button>
         </div>
-
       </div>
-      <div className="absolute bottom-8 text-[10px] font-bold tracking-[0.2em] uppercase opacity-30 text-[#9A9A9A]">
+      <div className="absolute bottom-8 text-[10px] font-bold tracking-[0.2em] text-[#9A9A9A] uppercase opacity-30">
         ERROR 401 / 403 • UNAUTHORIZED ACCESS
       </div>
     </div>
